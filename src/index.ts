@@ -3,6 +3,8 @@ import {
   Response,
 } from 'express'
 
+import requestIp from 'request-ip'
+
 // init project
 import express from 'express'
 
@@ -21,16 +23,19 @@ app.get("/", function (_: Request, res: Response) {
   res.sendFile(__dirname + '/views/index.html')
 })
 
+// Get the request ip for useage
+app.use(requestIp.mw())
 
 // your first API endpoint... 
 app.get("/api/whoami", (req: Request, res: Response) => {
   const headers = req.headers
   const software = headers['user-agent']  || ""
   const language = headers['accept-language'] || ""
-  const ipaddress = headers['host'] || ""
+  const ipaddress = req.clientIp
 
 
   res.json({ ipaddress, language, software })
+  res.end(ipaddress)
 })
 
 
